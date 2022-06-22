@@ -118,7 +118,9 @@ router.post("/create-list", async function (req, res, next) {
 router.post("/get-lists", async function (req, res, next) {
   var user = await userModel.find({ token: req.body.token });
 
-  var userLists = user[0].lists;
+  if (user) {
+    var userLists = user[0].lists;
+  }
 
   res.json({ userLists: userLists, user: user[0].username });
 });
