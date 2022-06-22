@@ -4,10 +4,10 @@ var userModel = require("../models/users");
 var bcrypt = require("bcrypt");
 var uid2 = require("uid2");
 var mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
 const sendGridMail = require("@sendgrid/mail");
-sendGridMail.setApiKey(
-  "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"
-);
+sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
