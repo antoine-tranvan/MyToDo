@@ -1,4 +1,6 @@
 var mongoose = require("mongoose");
+var dotenv = require("dotenv");
+dotenv.config();
 
 var options = {
   connectTimeoutMS: 5000,
@@ -7,7 +9,7 @@ var options = {
 };
 
 mongoose.connect(
-  "mongodb+srv://antoinetranvan:Peterpan10!@cluster0.d792e.mongodb.net/ToDoList?retryWrites=true&w=majority",
+  `mongodb+srv://antoinetranvan:${process.env.ATLAS_PWD}@cluster0.d792e.mongodb.net/ToDoList?retryWrites=true&w=majority`,
   options,
   function (error) {
     if (error == null) {
