@@ -1,0 +1,18 @@
+{
+  "titre": "Bonjour",
+  "ListCreation": "Creér une liste",
+  "ListDeletion": "Supprimer la liste",
+  "ListUpdate": "Mettre à jour la liste",
+  "TaskCreation": "Créer une nouvelle tâche",
+  "TaskUpdate": "mettre à jour",
+  "TaskDeletion": "supprimer",
+  "TaskMarkAsDone": "c'est fait !",
+  "IntroText": "Tu n'as pas encore de liste de tâches créée ! Tu peux commencer à en créer une en cliquant sur le bouton ci-dessous !",
+  "MessageListCreated": "Liste créée",
+  "MessageListUpdated": "Liste mise à jour",
+  "MessageListDeleted": "Liste supprimée",
+  "MessageTaskCreated": "Tâche créée",
+  "MessageTaskDeleted": "Tâche supprimée",
+  "MessageTaskDone": "Tâche mise à jour",
+  "MessageTaskUpdated": "Tâche mise à jour"
+}

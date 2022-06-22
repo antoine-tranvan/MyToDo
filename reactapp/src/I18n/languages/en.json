@@ -1,0 +1,18 @@
+{
+  "titre": "Hello",
+  "ListCreation": "Create a new list",
+  "ListDeletion": "Delete list",
+  "ListUpdate": "Update list",
+  "TaskCreation": "Create a new task",
+  "TaskUpdate": "edit",
+  "TaskDeletion": "delete",
+  "TaskMarkAsDone": "mark as done",
+  "IntroText": "You do not have any list created. Start right now putting some order in your life by clicking on the button below !",
+  "MessageListCreated": "List created",
+  "MessageListUpdated": "List updated",
+  "MessageListDeleted": "List deleted",
+  "MessageTaskCreated": "Task created",
+  "MessageTaskDeleted": "Task deleted",
+  "MessageTaskDone": "Task updated",
+  "MessageTaskUpdated": "Task updated"
+}
