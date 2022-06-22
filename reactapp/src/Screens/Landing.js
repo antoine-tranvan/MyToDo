@@ -15,7 +15,7 @@ function ScreenHome(props) {
   const [signInEmail, setSignInEmail] = useState("");
 
   async function handleSubmitSignUp() {
-    var rawResponse = await fetch("/sign-up", {
+    var rawResponse = await fetch("users/sign-up", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `username=${signUpUsername}&email=${signUpEmail}&password=${signUpPassword}`,
@@ -37,7 +37,7 @@ function ScreenHome(props) {
   }
 
   async function handleSubmitSignIn() {
-    var rawResponse = await fetch("/sign-in", {
+    var rawResponse = await fetch("users/sign-in", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `email=${signInEmail}&password=${signInPassword}`,

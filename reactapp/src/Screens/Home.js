@@ -72,7 +72,7 @@ const Home = (props) => {
   useEffect(() => {
     async function loadDataLists() {
       setLoading0(true);
-      var rawResponse = await fetch("/get-lists", {
+      var rawResponse = await fetch("lists/get-lists", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `token=${props.token}`,
@@ -82,10 +82,10 @@ const Home = (props) => {
 
       let items = data.userLists.map((el, index) => getItem(el.title, index));
 
-      console.log("rawlist", data.userLists);
       setLists(items);
       setRawLists(data.userLists);
       setUsername(data.user);
+
       if (idList == "noId") {
         setIdList(data.userLists[0]._id);
       }
@@ -97,7 +97,7 @@ const Home = (props) => {
   useEffect(() => {
     async function loadDataTasks() {
       setLoading0(true);
-      var rawResponse = await fetch("/get-tasks", {
+      var rawResponse = await fetch("tasks/get-tasks", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `token=${props.token}&listId=${idList}`,
@@ -105,7 +105,6 @@ const Home = (props) => {
 
       var data = await rawResponse.json();
 
-      console.log("data", data.taskslist[0].tasks);
       if (data.taskslist[0].tasks) {
         setTasksList(data.taskslist[0].tasks);
       }
@@ -113,6 +112,108 @@ const Home = (props) => {
     }
     loadDataTasks();
   }, [trigger]);
+
+  const onFinishCreate = async function (values) {
+    console.log("Success:", values.ListName, props.token);
+
+    let rawResponse = await fetch("lists/create-list", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `ListName=${values.ListName}&description=${values.Description}&token=${props.token}`,
+    });
+
+    let response = await rawResponse.json();
+    setIsModalVisibleCreate(false);
+    setTrigger(!trigger);
+    message.info(`${translation(props.language, "MessageListCreated")}`, 3);
+  };
+
+  const onFinishUpdate = async function (values) {
+    let rawResponse = await fetch("lists/update-list", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `title=${values.ListName}&description=${values.Description}&token=${props.token}&listId=${idList}`,
+    });
+
+    let response = await rawResponse.json();
+    setIsModalVisibleUpdate(false);
+    setTrigger(!trigger);
+    message.info(`${translation(props.language, "MessageListUpdated")}`, 3);
+  };
+
+  const deleteList = async () => {
+    if (idList == "noId") {
+      message.error("Sélectionner une liste dans le menu de gauche", 3);
+    } else {
+      let rawResponse = await fetch("lists/delete-list", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `token=${props.token}&listId=${idList}`,
+      });
+
+      let response = await rawResponse.json();
+      setTrigger(!trigger);
+
+      if (response.countcheck == 1) {
+        message.info(`${translation(props.language, "MessageListDeleted")}`, 3);
+      } else {
+        message.error(
+          "Merci de sélectionner une liste à supprimer dans le menu",
+          3
+        );
+      }
+    }
+  };
+
+  const onFinishDrawer = async function (values) {
+    let rawResponse = await fetch("tasks/create-task", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `TaskName=${values.TaskName}&description=${values.Description}&DueDate=${values.DueDate}&token=${props.token}&id=${idList}`,
+    });
+
+    let response = await rawResponse.json();
+    setVisibleCreate(false);
+    setTrigger(!trigger);
+    message.info(`${translation(props.language, "MessageTaskCreated")}`, 3);
+  };
+
+  const deleteTask = async (taskId) => {
+    let rawResponse = await fetch("tasks/delete-task", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `taskId=${taskId}&token=${props.token}&listId=${idList}`,
+    });
+
+    let response = await rawResponse.json();
+    message.info(`${translation(props.language, "MessageTaskDeleted")}`, 3);
+    setTrigger(!trigger);
+  };
+
+  const markAsDone = async (taskId) => {
+    let rawResponse = await fetch("tasks/mark-task-as-done", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `taskId=${taskId}&token=${props.token}&listId=${idList}`,
+    });
+
+    let response = await rawResponse.json();
+    setTrigger(!trigger);
+    message.info(`${translation(props.language, "MessageTaskDone")}`, 3);
+  };
+
+  const onFinishDrawerUpdate = async function (values) {
+    console.log("le bouton fonctionne");
+    let rawResponse = await fetch("tasks/update-task", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `title=${values.TaskName}&description=${values.Description}&DueDate=${values.DueDate}&token=${props.token}&listId=${idList}&taskId=${idTask}`,
+    });
+
+    setVisibleUpdate(false);
+    setTrigger(!trigger);
+    message.info(`${translation(props.language, "MessageTaskUpdated")}`, 3);
+  };
 
   const showModalCreate = () => {
     setIsModalVisibleCreate(true);
@@ -138,55 +239,14 @@ const Home = (props) => {
     setIsModalVisibleUpdate(false);
   };
 
-  const onFinishCreate = async function (values) {
-    console.log("Success:", values.ListName, props.token);
-
-    let rawResponse = await fetch("/create-list", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `ListName=${values.ListName}&description=${values.Description}&token=${props.token}`,
-    });
-
-    let response = await rawResponse.json();
-    setIsModalVisibleCreate(false);
-    setTrigger(!trigger);
-    message.info(`${translation(props.language, "MessageListCreated")}`, 3);
-  };
-
-  const onFinishUpdate = async function (values) {
-    let rawResponse = await fetch("/update-list", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `title=${values.ListName}&description=${values.Description}&token=${props.token}&listId=${idList}`,
-    });
-
-    let response = await rawResponse.json();
-    setIsModalVisibleUpdate(false);
-    setTrigger(!trigger);
-    message.info(`${translation(props.language, "MessageListUpdated")}`, 3);
-  };
-
-  const onFinishDrawer = async function (values) {
-    let rawResponse = await fetch("/create-task", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `TaskName=${values.TaskName}&description=${values.Description}&DueDate=${values.DueDate}&token=${props.token}&id=${idList}`,
-    });
-
-    let response = await rawResponse.json();
-    setVisibleCreate(false);
-    setTrigger(!trigger);
-    message.info(`${translation(props.language, "MessageTaskCreated")}`, 3);
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
   const onClick = ({ item, key }) => {
     setIdList(rawLists[key]._id);
     setIndexMenu(key);
     setTrigger(!trigger);
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
   };
 
   const showDrawer = () => {
@@ -197,68 +257,9 @@ const Home = (props) => {
     setVisibleCreate(false);
   };
 
-  const deleteTask = async (taskId) => {
-    let rawResponse = await fetch("/delete-task", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `taskId=${taskId}&token=${props.token}&listId=${idList}`,
-    });
-
-    let response = await rawResponse.json();
-    message.info(`${translation(props.language, "MessageTaskDeleted")}`, 3);
-    setTrigger(!trigger);
-  };
-
-  const markAsDone = async (taskId) => {
-    let rawResponse = await fetch("/mark-task-as-done", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `taskId=${taskId}&token=${props.token}&listId=${idList}`,
-    });
-
-    let response = await rawResponse.json();
-    setTrigger(!trigger);
-    message.info(`${translation(props.language, "MessageTaskDone")}`, 3);
-  };
-
-  const onFinishDrawerUpdate = async function (values) {
-    console.log("le bouton fonctionne");
-    let rawResponse = await fetch("/update-task", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `title=${values.TaskName}&description=${values.Description}&DueDate=${values.DueDate}&token=${props.token}&listId=${idList}&taskId=${idTask}`,
-    });
-
-    setVisibleUpdate(false);
-    setTrigger(!trigger);
-    message.info(`${translation(props.language, "MessageTaskUpdated")}`, 3);
-  };
-
   const updateClick = function (item) {
     setVisibleUpdate(true);
     setidTask(item);
-  };
-
-  const deleteList = async () => {
-    if (idList == "noId") {
-      message.error("Sélectionner une liste dans le menu de gauche", 3);
-    } else {
-      let rawResponse = await fetch("/delete-list", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `token=${props.token}&listId=${idList}`,
-      });
-      let response = await rawResponse.json();
-      setTrigger(!trigger);
-      if (response.countcheck == 1) {
-        message.info(`${translation(props.language, "MessageListDeleted")}`, 3);
-      } else {
-        message.error(
-          "Merci de sélectionner une liste à supprimer dans le menu",
-          3
-        );
-      }
-    }
   };
 
   const handleChange = (value) => {
