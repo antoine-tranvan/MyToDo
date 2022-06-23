@@ -28,8 +28,8 @@ router.post("/create-task", async function (req, res, next) {
         title: req.body.TaskName,
         description: req.body.description,
         dueDate: req.body.DueDate,
-        priority: "High",
-        status: "Not started",
+        priority: req.body.Priority,
+        status: "Pas commencé",
       });
     }
   }
@@ -40,8 +40,8 @@ router.post("/create-task", async function (req, res, next) {
       title: req.body.TaskName,
       description: req.body.description,
       dueDate: req.body.DueDate,
-      priority: "High",
-      status: "Not started",
+      priority: req.body.Priority,
+      status: "Pas commencé",
     });
   }
 
@@ -98,6 +98,8 @@ router.post("/update-task", async function (req, res, next) {
       updatedUser.lists[i].tasks.id(req.body.taskId).description =
         req.body.description;
       updatedUser.lists[i].tasks.id(req.body.taskId).dueDate = req.body.dueDate;
+      updatedUser.lists[i].tasks.id(req.body.taskId).priority =
+        req.body.Priority;
     }
   }
 

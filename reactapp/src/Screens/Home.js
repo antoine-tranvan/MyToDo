@@ -7,7 +7,7 @@ import {
   DownOutlined,
 } from "@ant-design/icons";
 import {
-  Breadcrumb,
+  Badge,
   Layout,
   Menu,
   Button,
@@ -21,6 +21,7 @@ import {
   Space,
   message,
   Select,
+  Tag,
 } from "antd";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
@@ -66,6 +67,7 @@ const Home = (props) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [tasksList, setTasksList] = useState([]);
+  const [badge, setBadge] = useState();
 
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
 
@@ -169,7 +171,7 @@ const Home = (props) => {
     let rawResponse = await fetch("tasks/create-task", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `TaskName=${values.TaskName}&description=${values.Description}&DueDate=${values.DueDate}&token=${props.token}&id=${idList}`,
+      body: `TaskName=${values.TaskName}&description=${values.Description}&DueDate=${values.DueDate}&Priority=${values.Priority}&token=${props.token}&id=${idList}`,
     });
 
     let response = await rawResponse.json();
@@ -207,7 +209,7 @@ const Home = (props) => {
     let rawResponse = await fetch("tasks/update-task", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `title=${values.TaskName}&description=${values.Description}&DueDate=${values.DueDate}&token=${props.token}&listId=${idList}&taskId=${idTask}`,
+      body: `title=${values.TaskName}&description=${values.Description}&DueDate=${values.DueDate}&Priority=${values.Priority}&token=${props.token}&listId=${idList}&taskId=${idTask}`,
     });
 
     setVisibleUpdate(false);
@@ -277,49 +279,53 @@ const Home = (props) => {
         minHeight: "100vh",
       }}
     >
-      <Sider
-        // collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
+      <Header
+        className="site-layout-background"
+        style={{
+          paddingLeft: 20,
+          fontSize: 20,
+          backgroundColor: "#d1453b",
+        }}
       >
-        <div className="logo" />
-      </Sider>
-      <Layout className="site-layout">
-        <Header
-          className="site-layout-background"
-          style={{
-            paddingLeft: 20,
-            fontSize: 20,
-          }}
-        >
-          <div className="header">
-            <div>
-              {translation(props.language, "titre")} {username} 👋 !
-            </div>
-            <Select
-              defaultValue="Français"
-              style={{
-                width: 120,
-                marginTop: 15,
-              }}
-              onChange={handleChange}
-              showArrow={false}
-            >
-              <Option value="English">English</Option>
-              <Option value="Français">Français</Option>
-            </Select>
+        <div className="header">
+          <div
+            style={{
+              color: "white",
+            }}
+          >
+            {translation(props.language, "titre")} {username} 👋 !
           </div>
-        </Header>
+          <Select
+            defaultValue="Français"
+            style={{
+              width: 120,
+              marginTop: 15,
+            }}
+            onChange={handleChange}
+            showArrow={false}
+          >
+            <Option value="English">English</Option>
+            <Option value="Français">Français</Option>
+          </Select>
+        </div>
+      </Header>
+      <Layout className="site-layout">
+        <Sider
+          // collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+          style={{
+            backgroundColor: "#f3f3f3",
+          }}
+        ></Sider>
+
         <Content
           style={{
-            margin: "0 16px",
+            backgroundColor: "white",
+            paddingLeft: "100px",
+            paddingRight: "200px",
           }}
         >
-          <Breadcrumb
-            style={{
-              margin: "16px 0",
-            }}
-          ></Breadcrumb>
           <div
             className="site-layout-background"
             style={{
@@ -331,7 +337,7 @@ const Home = (props) => {
               <div>{translation(props.language, "IntroText")}</div>
               <Button
                 style={{
-                  marginTop: 10,
+                  marginTop: 30,
                   margin: "4px",
                 }}
                 type="primary"
@@ -403,13 +409,6 @@ const Home = (props) => {
             </div>
           </div>
         </Content>
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
-        >
-          ©2022 Created by ATV
-        </Footer>
       </Layout>
     </Layout>
   ) : (
@@ -418,126 +417,135 @@ const Home = (props) => {
         minHeight: "100vh",
       }}
     >
-      <Sider
-        // collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
+      <Header
+        className="site-layout-background"
+        style={{
+          paddingLeft: 20,
+          fontSize: 20,
+
+          backgroundColor: "#d1453b",
+        }}
       >
-        <div className="logo" />
-        <Button
-          style={{
-            margin: "16px",
-          }}
-          type="primary"
-          icon={<PlusCircleOutlined />}
-          onClick={showModalCreate}
-        >
-          {translation(props.language, "ListCreation")}
-        </Button>
-        <Modal
-          title="Create a new list"
-          visible={isModalVisibleCreate}
-          onOk={handleOkCreate}
-          onCancel={handleCancelCreate}
-          footer={null}
-        >
-          <Form
-            name="basic"
-            labelCol={{
-              span: 8,
+        <div className="header">
+          <div
+            style={{
+              color: "white",
             }}
-            wrapperCol={{
-              span: 16,
-            }}
-            initialValues={{
-              remember: true,
-            }}
-            onFinish={onFinishCreate}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
           >
-            <Form.Item
-              label="ListName"
-              name="ListName"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input a name for your list!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label="Description"
-              name="Description"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input a description for your list!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
+            {translation(props.language, "titre")} {username} 👋 !
+          </div>
+          <Select
+            defaultValue="Français"
+            style={{
+              width: 120,
+              marginTop: 15,
+            }}
+            onChange={handleChange}
+            showArrow={false}
+          >
+            <Option value="English">English</Option>
+            <Option value="Français">Français</Option>
+          </Select>
+        </div>
+      </Header>
+      <Layout className="site-layout">
+        <Sider
+          // collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+          style={{
+            backgroundColor: "#f3f3f3",
+          }}
+        >
+          <Button
+            style={{
+              margin: "16px",
+            }}
+            type="primary"
+            icon={<PlusCircleOutlined />}
+            onClick={showModalCreate}
+          >
+            {translation(props.language, "ListCreation")}
+          </Button>
+          <Modal
+            title="Create a new list"
+            visible={isModalVisibleCreate}
+            onOk={handleOkCreate}
+            onCancel={handleCancelCreate}
+            footer={null}
+          >
+            <Form
+              name="basic"
+              labelCol={{
+                span: 8,
+              }}
               wrapperCol={{
-                offset: 8,
                 span: 16,
               }}
-            >
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["0"]}
-          mode="inline"
-          items={lists}
-          onClick={onClick}
-        />
-      </Sider>
-      <Layout className="site-layout">
-        <Header
-          className="site-layout-background"
-          style={{
-            paddingLeft: 20,
-            fontSize: 20,
-          }}
-        >
-          <div className="header">
-            <div>
-              {translation(props.language, "titre")} {username} 👋 !
-            </div>
-            <Select
-              defaultValue="Français"
-              style={{
-                width: 120,
-                marginTop: 15,
+              initialValues={{
+                remember: true,
               }}
-              onChange={handleChange}
-              showArrow={false}
+              onFinish={onFinishCreate}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
             >
-              <Option value="English">English</Option>
-              <Option value="Français">Français</Option>
-            </Select>
-          </div>
-        </Header>
+              <Form.Item
+                label="ListName"
+                name="ListName"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input a name for your list!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                label="Description"
+                name="Description"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input a description for your list!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                wrapperCol={{
+                  offset: 8,
+                  span: 16,
+                }}
+              >
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </Modal>
+          <Menu
+            theme="light"
+            defaultSelectedKeys={["0"]}
+            mode="inline"
+            items={lists}
+            onClick={onClick}
+            style={{
+              backgroundColor: "#f3f3f3",
+            }}
+          />
+        </Sider>
+
         <Content
           style={{
-            margin: "0 16px",
+            backgroundColor: "white",
+            paddingLeft: "100px",
+            paddingRight: "200px",
           }}
         >
-          <Breadcrumb
-            style={{
-              margin: "16px 0",
-            }}
-          ></Breadcrumb>
           <div
             className="site-layout-background"
             style={{
@@ -715,6 +723,22 @@ const Home = (props) => {
                 </Form.Item>
 
                 <Form.Item
+                  label="Priority"
+                  name="Priority"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input a priority for your task!",
+                    },
+                  ]}
+                >
+                  <Select>
+                    <Select.Option value="Priorité 1">Priorité 1</Select.Option>
+                    <Select.Option value="Priorité 2">Priorité 2</Select.Option>
+                  </Select>
+                </Form.Item>
+
+                <Form.Item
                   wrapperCol={{
                     offset: 8,
                     span: 16,
@@ -773,6 +797,17 @@ const Home = (props) => {
                         margin: "16px",
                       }}
                     >
+                      {item.status == "Pas commencé" ? (
+                        <Badge status="processing" text={item.status} />
+                      ) : (
+                        <Badge status="success" text={item.status} />
+                      )}
+                    </div>
+                    <div
+                      style={{
+                        margin: "16px",
+                      }}
+                    >
                       {moment(item.dueDate).format("DD/MM/YY")}
                     </div>
                     <div
@@ -780,7 +815,11 @@ const Home = (props) => {
                         margin: "16px",
                       }}
                     >
-                      {item.status}
+                      {item.priority == "Priorité 1" ? (
+                        <Tag color="magenta">{item.priority}</Tag>
+                      ) : (
+                        <Tag color="geekblue">{item.priority}</Tag>
+                      )}
                     </div>
                   </Skeleton>
                 </List.Item>
@@ -851,6 +890,22 @@ const Home = (props) => {
               </Form.Item>
 
               <Form.Item
+                label="Priority"
+                name="Priority"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input a priority for your task!",
+                  },
+                ]}
+              >
+                <Select>
+                  <Select.Option value="Priorité 1">Priorité 1</Select.Option>
+                  <Select.Option value="Priorité 2">Priorité 2</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item
                 wrapperCol={{
                   offset: 8,
                   span: 16,
@@ -863,13 +918,6 @@ const Home = (props) => {
             </Form>
           </Drawer>
         </Content>
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
-        >
-          ©2022 Created by ATV
-        </Footer>
       </Layout>
     </Layout>
   );
