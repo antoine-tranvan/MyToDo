@@ -8,6 +8,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const sendGridMail = require("@sendgrid/mail");
 sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
+let nodemailer = require("nodemailer");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -41,37 +42,36 @@ router.post("/sign-up", async function (req, res, next) {
     });
 
     var userSaved = await newUser.save();
-  }
-  console.log("userSaved", userSaved);
 
-  function getMessage() {
-    const body = "Welcome and have fun!";
-    return {
-      to: `${userSaved.email}`,
-      from: "antoine.tranvan@gmail.com",
-      subject: "Thank you for Signing Up to our TODO Webapp !",
-      text: body,
-      html: `<strong>${body}</strong>`,
-    };
-  }
+    function getMessage() {
+      const body = "Welcome and have fun!";
+      return {
+        to: `${userSaved.email}`,
+        from: "antoine.tranvan@gmail.com",
+        subject: "Thank you for Signing Up to our TODO Webapp !",
+        text: body,
+        html: `<strong>${body}</strong>`,
+      };
+    }
 
-  async function sendEmail() {
-    try {
-      await sendGridMail.send(getMessage());
-      console.log("Test email sent successfully");
-    } catch (error) {
-      console.error("Error sending test email");
-      console.error(error);
-      if (error.response) {
-        console.error(error.response.body);
+    async function sendEmail() {
+      try {
+        await sendGridMail.send(getMessage());
+        console.log("Test email sent successfully");
+      } catch (error) {
+        console.error("Error sending test email");
+        console.error(error);
+        if (error.response) {
+          console.error(error.response.body);
+        }
       }
     }
-  }
 
-  (async () => {
-    console.log("Sending test email");
-    await sendEmail();
-  })();
+    (async () => {
+      console.log("Sending test email");
+      await sendEmail();
+    })();
+  }
 
   res.json({ results, errorMessage, userSaved });
 });
