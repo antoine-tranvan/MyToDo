@@ -10,7 +10,7 @@ sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 var cron = require("node-cron");
 
-cron.schedule("* * * * *", async function () {
+cron.schedule("00 10 * * *", async function () {
   console.log("running a task every minute");
   var user = await userModel.find();
 
