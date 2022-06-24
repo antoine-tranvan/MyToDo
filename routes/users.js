@@ -44,13 +44,13 @@ router.post("/sign-up", async function (req, res, next) {
     var userSaved = await newUser.save();
 
     function getMessage() {
-      const body = "Welcome and have fun!";
+      const body = "Welcome and have fun with MyToDo app!";
       return {
         to: `${userSaved.email}`,
         from: "antoine.tranvan@gmail.com",
-        subject: "Thank you for Signing Up to our TODO Webapp !",
+        subject: "[MyToDo]Thank you for Signing Up to MyToDo Webapp !",
         text: body,
-        html: `<strong>${body}</strong>`,
+        html: `<div>Dear ${userSaved.username},</div><div>${body}</div><div>The MyToDo Team</div>`,
       };
     }
 

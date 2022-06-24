@@ -5,6 +5,7 @@ import {
   CloseSquareOutlined,
   UpCircleOutlined,
   DownOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import {
   Badge,
@@ -25,8 +26,10 @@ import {
 } from "antd";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import moment from "moment";
 import "moment/locale/fr";
+
 moment.locale("fr");
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -67,7 +70,6 @@ const Home = (props) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [tasksList, setTasksList] = useState([]);
-  const [badge, setBadge] = useState();
 
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
 
@@ -255,8 +257,12 @@ const Home = (props) => {
     setVisibleCreate(true);
   };
 
-  const onClose = () => {
+  const onCloseCreate = () => {
     setVisibleCreate(false);
+  };
+
+  const onCloseUpdate = () => {
+    setVisibleUpdate(false);
   };
 
   const updateClick = function (item) {
@@ -295,18 +301,28 @@ const Home = (props) => {
           >
             {translation(props.language, "titre")} {username} 👋 !
           </div>
-          <Select
-            defaultValue="Français"
-            style={{
-              width: 120,
-              marginTop: 15,
-            }}
-            onChange={handleChange}
-            showArrow={false}
-          >
-            <Option value="English">English</Option>
-            <Option value="Français">Français</Option>
-          </Select>
+          <div className="headerTopRight">
+            <Select
+              defaultValue="Français"
+              style={{
+                width: 120,
+                marginTop: 15,
+              }}
+              onChange={handleChange}
+              showArrow={false}
+            >
+              <Option value="English">English</Option>
+              <Option value="Français">Français</Option>
+            </Select>
+            <Link to="/">
+              <LogoutOutlined
+                style={{
+                  color: "white",
+                  marginLeft: 15,
+                }}
+              />
+            </Link>
+          </div>
         </div>
       </Header>
       <Layout className="site-layout">
@@ -434,18 +450,28 @@ const Home = (props) => {
           >
             {translation(props.language, "titre")} {username} 👋 !
           </div>
-          <Select
-            defaultValue="Français"
-            style={{
-              width: 120,
-              marginTop: 15,
-            }}
-            onChange={handleChange}
-            showArrow={false}
-          >
-            <Option value="English">English</Option>
-            <Option value="Français">Français</Option>
-          </Select>
+          <div className="headerTopRight">
+            <Select
+              defaultValue="Français"
+              style={{
+                width: 120,
+                marginTop: 15,
+              }}
+              onChange={handleChange}
+              showArrow={false}
+            >
+              <Option value="English">English</Option>
+              <Option value="Français">Français</Option>
+            </Select>
+            <Link to="/">
+              <LogoutOutlined
+                style={{
+                  color: "white",
+                  marginLeft: 15,
+                }}
+              />
+            </Link>
+          </div>
         </div>
       </Header>
       <Layout className="site-layout">
@@ -662,7 +688,7 @@ const Home = (props) => {
             <Drawer
               title="Create a new task"
               placement="right"
-              onClose={onClose}
+              onClose={onCloseCreate}
               visible={visibleCreate}
             >
               <Form
@@ -717,7 +743,7 @@ const Home = (props) => {
                   ]}
                 >
                   <DatePicker
-                    defaultValue={moment("20/06/2022", dateFormatList[0])}
+                    // defaultValue={moment("20/06/2022", dateFormatList[0])}
                     format={dateFormatList}
                   />
                 </Form.Item>
@@ -829,7 +855,7 @@ const Home = (props) => {
           <Drawer
             title="Update an existing task"
             placement="right"
-            onClose={onClose}
+            onClose={onCloseUpdate}
             visible={visibleUpdate}
           >
             <Form
@@ -884,7 +910,7 @@ const Home = (props) => {
                 ]}
               >
                 <DatePicker
-                  defaultValue={moment("20/06/2022", dateFormatList[0])}
+                  // defaultValue={moment("20/06/2022", dateFormatList[0])}
                   format={dateFormatList}
                 />
               </Form.Item>
