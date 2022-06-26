@@ -7,6 +7,7 @@ import { createStore, combineReducers } from "redux";
 
 import Landing from "./Screens/Landing";
 import Home from "./Screens/Home.js";
+import HomeB from "./Screens/HomeB.js";
 
 import username from "./reducers/user.reducer";
 import token from "./reducers/token.reducer";
@@ -21,6 +22,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={Landing} />
           <Route path="/home" component={Home} />
+          <Route path="/homeB" component={HomeB} />
         </Switch>
       </Router>
     </Provider>

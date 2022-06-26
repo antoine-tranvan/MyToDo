@@ -1,10 +1,7 @@
 import { translation } from "../I18n/I18n";
 import {
-  PlusCircleOutlined,
   RightCircleOutlined,
   CloseSquareOutlined,
-  UpCircleOutlined,
-  DownOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import {
@@ -12,11 +9,6 @@ import {
   Layout,
   Menu,
   Button,
-  Modal,
-  Form,
-  Input,
-  Drawer,
-  DatePicker,
   List,
   Skeleton,
   Space,
@@ -29,6 +21,10 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import "moment/locale/fr";
+import ListButton from "../Components/ListButton";
+import ListModal from "../Components/ListModal";
+import TaskDrawer from "../Components/TaskDrawer";
+import TasksList from "../Components/TasksList";
 
 moment.locale("fr");
 
@@ -66,9 +62,6 @@ const Home = (props) => {
   const [indexMenu, setIndexMenu] = useState(0);
   const [loading0, setLoading0] = useState(false);
   const [username, setUsername] = useState();
-  const [initLoading, setInitLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
   const [tasksList, setTasksList] = useState([]);
 
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
@@ -279,155 +272,7 @@ const Home = (props) => {
     console.log(`selected ${value}`);
   };
 
-  return rawLists.length == 0 ? (
-    <Layout
-      style={{
-        minHeight: "100vh",
-      }}
-    >
-      <Header
-        className="site-layout-background"
-        style={{
-          paddingLeft: 20,
-          fontSize: 20,
-          backgroundColor: "#d1453b",
-        }}
-      >
-        <div className="header">
-          <div
-            style={{
-              color: "white",
-            }}
-          >
-            {translation(props.language, "titre")} {username} 👋 !
-          </div>
-          <div className="headerTopRight">
-            <Select
-              defaultValue="Français"
-              style={{
-                width: 120,
-                marginTop: 15,
-              }}
-              onChange={handleChange}
-              showArrow={false}
-            >
-              <Option value="English">English</Option>
-              <Option value="Français">Français</Option>
-            </Select>
-            <Link to="/">
-              <LogoutOutlined
-                style={{
-                  color: "white",
-                  marginLeft: 15,
-                }}
-              />
-            </Link>
-          </div>
-        </div>
-      </Header>
-      <Layout className="site-layout">
-        <Sider
-          // collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-          style={{
-            backgroundColor: "#f3f3f3",
-          }}
-        ></Sider>
-
-        <Content
-          style={{
-            backgroundColor: "white",
-            paddingLeft: "100px",
-            paddingRight: "200px",
-          }}
-        >
-          <div
-            className="site-layout-background"
-            style={{
-              padding: 24,
-              minHeight: 360,
-            }}
-          >
-            <div>
-              <div>{translation(props.language, "IntroText")}</div>
-              <Button
-                style={{
-                  marginTop: 30,
-                  margin: "4px",
-                }}
-                type="primary"
-                icon={<PlusCircleOutlined />}
-                onClick={showModalCreate}
-              >
-                {translation(props.language, "ListCreation")}
-              </Button>
-              <Modal
-                title="Create a new list"
-                visible={isModalVisibleCreate}
-                onOk={handleOkCreate}
-                onCancel={handleCancelCreate}
-                footer={null}
-              >
-                <Form
-                  name="basic"
-                  labelCol={{
-                    span: 8,
-                  }}
-                  wrapperCol={{
-                    span: 16,
-                  }}
-                  initialValues={{
-                    remember: true,
-                  }}
-                  onFinish={onFinishCreate}
-                  onFinishFailed={onFinishFailed}
-                  autoComplete="off"
-                >
-                  <Form.Item
-                    label="ListName"
-                    name="ListName"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input a name for your list!",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-
-                  <Form.Item
-                    label="Description"
-                    name="Description"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input a description for your list!",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-
-                  <Form.Item
-                    wrapperCol={{
-                      offset: 8,
-                      span: 16,
-                    }}
-                  >
-                    <Button type="primary" htmlType="submit">
-                      Submit
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Modal>
-            </div>
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
-  ) : (
+  return (
     <Layout
       style={{
         minHeight: "100vh",
@@ -483,76 +328,19 @@ const Home = (props) => {
             backgroundColor: "#f3f3f3",
           }}
         >
-          <Button
-            style={{
-              margin: "16px",
-            }}
-            type="primary"
-            icon={<PlusCircleOutlined />}
-            onClick={showModalCreate}
-          >
-            {translation(props.language, "ListCreation")}
-          </Button>
-          <Modal
+          <ListButton
+            margin="16px"
+            label={translation(props.language, "ListCreation")}
+            handleClick={showModalCreate}
+          />
+          <ListModal
             title="Create a new list"
             visible={isModalVisibleCreate}
             onOk={handleOkCreate}
             onCancel={handleCancelCreate}
-            footer={null}
-          >
-            <Form
-              name="basic"
-              labelCol={{
-                span: 8,
-              }}
-              wrapperCol={{
-                span: 16,
-              }}
-              initialValues={{
-                remember: true,
-              }}
-              onFinish={onFinishCreate}
-              onFinishFailed={onFinishFailed}
-              autoComplete="off"
-            >
-              <Form.Item
-                label="ListName"
-                name="ListName"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input a name for your list!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="Description"
-                name="Description"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input a description for your list!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                wrapperCol={{
-                  offset: 8,
-                  span: 16,
-                }}
-              >
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
-              </Form.Item>
-            </Form>
-          </Modal>
+            onFinish={onFinishCreate}
+            onFinishFailed={onFinishFailed}
+          />
           <Menu
             theme="light"
             defaultSelectedKeys={["0"]}
@@ -603,346 +391,49 @@ const Home = (props) => {
               >
                 {translation(props.language, "ListDeletion")}
               </Button>
-              <Button
-                style={{
-                  margin: "1px",
-                }}
-                type="primary"
-                icon={<UpCircleOutlined />}
-                onClick={showModalUpdate}
-              >
-                {translation(props.language, "ListUpdate")}
-              </Button>
-              <Modal
+              <ListButton
+                margin="1px"
+                label={translation(props.language, "ListUpdate")}
+                handleClick={showModalUpdate}
+              />
+              <ListModal
                 title="Update current list"
                 visible={isModalVisibleUpdate}
                 onOk={handleOkUpdate}
                 onCancel={handleCancelUpdate}
-                footer={null}
-              >
-                <Form
-                  name="basic"
-                  labelCol={{
-                    span: 8,
-                  }}
-                  wrapperCol={{
-                    span: 16,
-                  }}
-                  initialValues={{
-                    remember: true,
-                  }}
-                  onFinish={onFinishUpdate}
-                  onFinishFailed={onFinishFailed}
-                  autoComplete="off"
-                >
-                  <Form.Item
-                    label="ListName"
-                    name="ListName"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input a name for your list!",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-
-                  <Form.Item
-                    label="Description"
-                    name="Description"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input a description for your list!",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-
-                  <Form.Item
-                    wrapperCol={{
-                      offset: 8,
-                      span: 16,
-                    }}
-                  >
-                    <Button type="primary" htmlType="submit">
-                      Submit
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Modal>
-
-              <Button
-                style={{
-                  margin: "1px",
-                }}
-                type="primary"
-                icon={<PlusCircleOutlined />}
-                onClick={showDrawer}
-              >
-                {translation(props.language, "TaskCreation")}
-              </Button>
+                onFinish={onFinishUpdate}
+                onFinishFailed={onFinishFailed}
+              />
+              <ListButton
+                margin="1px"
+                label={translation(props.language, "TaskCreation")}
+                handleClick={showDrawer}
+              />
             </div>
-            <Drawer
+            <TaskDrawer
               title="Create a new task"
-              placement="right"
               onClose={onCloseCreate}
               visible={visibleCreate}
-            >
-              <Form
-                name="tasks"
-                labelCol={{
-                  span: 8,
-                }}
-                wrapperCol={{
-                  span: 16,
-                }}
-                initialValues={{
-                  remember: true,
-                }}
-                onFinish={onFinishDrawer}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
-              >
-                <Form.Item
-                  label="TaskName"
-                  name="TaskName"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input a name for your task!",
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-
-                <Form.Item
-                  label="Description"
-                  name="Description"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input a description for your task!",
-                    },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-
-                <Form.Item
-                  label="DueDate"
-                  name="DueDate"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input a duedate for your task!",
-                    },
-                  ]}
-                >
-                  <DatePicker
-                    // defaultValue={moment("20/06/2022", dateFormatList[0])}
-                    format={dateFormatList}
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label="Priority"
-                  name="Priority"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input a priority for your task!",
-                    },
-                  ]}
-                >
-                  <Select>
-                    <Select.Option value="Priorité 1">Priorité 1</Select.Option>
-                    <Select.Option value="Priorité 2">Priorité 2</Select.Option>
-                  </Select>
-                </Form.Item>
-
-                <Form.Item
-                  wrapperCol={{
-                    offset: 8,
-                    span: 16,
-                  }}
-                >
-                  <Button type="primary" htmlType="submit">
-                    Submit
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Drawer>
-
-            <List
-              className="demo-loadmore-list"
-              // loading={initLoading}
-              itemLayout="horizontal"
+              onFinish={onFinishDrawer}
+              onFinishFailed={onFinishFailed}
+            />
+            <TasksList
               dataSource={tasksList}
-              renderItem={(item) => (
-                <List.Item
-                  actions={[
-                    <a
-                      key="list-loadmore-edit"
-                      onClick={() => {
-                        updateClick(item._id);
-                      }}
-                    >
-                      {translation(props.language, "TaskUpdate")}
-                    </a>,
-                    <a
-                      key="list-loadmore-edite"
-                      onClick={() => deleteTask(item._id)}
-                    >
-                      {translation(props.language, "TaskDeletion")}
-                    </a>,
-                    <a
-                      key="list-loadmore-edite"
-                      onClick={() => markAsDone(item._id)}
-                    >
-                      {translation(props.language, "TaskMarkAsDone")}
-                    </a>,
-                  ]}
-                >
-                  <Skeleton avatar title={false} loading={item.loading} active>
-                    <List.Item.Meta
-                      avatar={
-                        <IconText
-                          icon={RightCircleOutlined}
-                          key="list-vertical-star-o"
-                        />
-                      }
-                      title={<a>{item.title}</a>}
-                      description={item.description}
-                    />
-                    <div
-                      style={{
-                        margin: "16px",
-                      }}
-                    >
-                      {item.status == "Pas commencé" ? (
-                        <Badge status="processing" text={item.status} />
-                      ) : (
-                        <Badge status="success" text={item.status} />
-                      )}
-                    </div>
-                    <div
-                      style={{
-                        margin: "16px",
-                      }}
-                    >
-                      {moment(item.dueDate).format("DD/MM/YY")}
-                    </div>
-                    <div
-                      style={{
-                        margin: "16px",
-                      }}
-                    >
-                      {item.priority == "Priorité 1" ? (
-                        <Tag color="magenta">{item.priority}</Tag>
-                      ) : (
-                        <Tag color="geekblue">{item.priority}</Tag>
-                      )}
-                    </div>
-                  </Skeleton>
-                </List.Item>
-              )}
+              Update={translation(props.language, "TaskUpdate")}
+              Deletion={translation(props.language, "TaskDeletion")}
+              Done={translation(props.language, "TaskMarkAsDone")}
+              updateClick={updateClick}
+              deleteTask={deleteTask}
+              markAsDone={markAsDone}
             />
           </div>
-          <Drawer
+          <TaskDrawer
             title="Update an existing task"
-            placement="right"
             onClose={onCloseUpdate}
             visible={visibleUpdate}
-          >
-            <Form
-              name="tasks"
-              labelCol={{
-                span: 8,
-              }}
-              wrapperCol={{
-                span: 16,
-              }}
-              initialValues={{
-                remember: true,
-              }}
-              onFinish={onFinishDrawerUpdate}
-              onFinishFailed={onFinishFailed}
-              autoComplete="off"
-            >
-              <Form.Item
-                label="TaskName"
-                name="TaskName"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input a name for your task!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="Description"
-                name="Description"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input a description for your task!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="DueDate"
-                name="DueDate"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input a duedate for your task!",
-                  },
-                ]}
-              >
-                <DatePicker
-                  // defaultValue={moment("20/06/2022", dateFormatList[0])}
-                  format={dateFormatList}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Priority"
-                name="Priority"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input a priority for your task!",
-                  },
-                ]}
-              >
-                <Select>
-                  <Select.Option value="Priorité 1">Priorité 1</Select.Option>
-                  <Select.Option value="Priorité 2">Priorité 2</Select.Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                wrapperCol={{
-                  offset: 8,
-                  span: 16,
-                }}
-              >
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
-              </Form.Item>
-            </Form>
-          </Drawer>
+            onFinish={onFinishDrawerUpdate}
+            onFinishFailed={onFinishFailed}
+          />
         </Content>
       </Layout>
     </Layout>

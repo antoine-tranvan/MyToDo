@@ -59,7 +59,7 @@ function ScreenHome(props) {
   }
 
   if (isLogin == true) {
-    return <Redirect to="/home" />;
+    return <Redirect to="/homeB" />;
   } else {
     return (
       <div className="Login-page">
