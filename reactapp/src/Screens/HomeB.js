@@ -8,6 +8,7 @@ import moment from "moment";
 import "moment/locale/fr";
 import ListButton from "../Components/ListButton";
 import ListModal from "../Components/ListModal";
+import GlobalHeader from "../Components/GlobalHeader";
 
 moment.locale("fr");
 
@@ -25,7 +26,6 @@ function getItem(label, key, icon, children) {
 }
 
 const HomeB = (props) => {
-  const [collapsed, setCollapsed] = useState(false);
   const [isModalVisibleCreate, setIsModalVisibleCreate] = useState(false);
   const [lists, setLists] = useState([]);
   const [rawLists, setRawLists] = useState([]);
@@ -103,58 +103,21 @@ const HomeB = (props) => {
   };
 
   return rawLists.length > 0 ? (
-    <Redirect to="/home" />
+    <Redirect to="/homeA" />
   ) : (
     <Layout
       style={{
         minHeight: "100vh",
       }}
     >
-      <Header
-        className="site-layout-background"
-        style={{
-          paddingLeft: 20,
-          fontSize: 20,
-          backgroundColor: "#d1453b",
-        }}
-      >
-        <div className="header">
-          <div
-            style={{
-              color: "white",
-            }}
-          >
-            {translation(props.language, "titre")} {username} 👋 !
-          </div>
-          <div className="headerTopRight">
-            <Select
-              defaultValue="Français"
-              style={{
-                width: 120,
-                marginTop: 15,
-              }}
-              onChange={handleChange}
-              showArrow={false}
-            >
-              <Option value="English">English</Option>
-              <Option value="Français">Français</Option>
-            </Select>
-            <Link to="/">
-              <LogoutOutlined
-                style={{
-                  color: "white",
-                  marginLeft: 15,
-                }}
-              />
-            </Link>
-          </div>
-        </div>
-      </Header>
+      <GlobalHeader
+        welcomeTitle={`${translation(props.language, "titre")} ${
+          props.username
+        } 👋 !`}
+        handleChange={handleChange}
+      />
       <Layout className="site-layout">
         <Sider
-          // collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
           style={{
             backgroundColor: "#f3f3f3",
           }}
@@ -199,7 +162,11 @@ const HomeB = (props) => {
 };
 
 function mapStateToProps(state) {
-  return { token: state.token, language: state.language };
+  return {
+    token: state.token,
+    language: state.language,
+    username: state.username,
+  };
 }
 
 function mapDispatchToProps(dispatch) {

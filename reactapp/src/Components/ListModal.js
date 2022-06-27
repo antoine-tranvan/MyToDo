@@ -1,6 +1,5 @@
 import { Button, Modal, Form, Input } from "antd";
-import react from "react";
-import { connect } from "react-redux";
+import React from "react";
 
 const CreateModal = ({
   title,

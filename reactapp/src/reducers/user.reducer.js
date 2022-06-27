@@ -1,8 +1,8 @@
-export default function (user = "", action) {
+export default function (username = "", action) {
   if (action.type == "addUser") {
-    var newUser = action.username;
-    return newUser;
+    var newUserName = action.username;
+    return newUserName;
   } else {
-    return user;
+    return username;
   }
 }

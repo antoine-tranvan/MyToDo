@@ -6,14 +6,28 @@ import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
 
 import Landing from "./Screens/Landing";
-import Home from "./Screens/Home.js";
+import HomeA from "./Screens/HomeA.js";
 import HomeB from "./Screens/HomeB.js";
 
 import username from "./reducers/user.reducer";
 import token from "./reducers/token.reducer";
 import language from "./reducers/language.reducer";
+import idList from "./reducers/idList.reducer";
+import indexMenu from "./reducers/indexMenu.reducer";
+import rawLists from "./reducers/rawLists.reducer";
+import trigger from "./reducers/trigger.reducer";
 
-const store = createStore(combineReducers({ token, username, language }));
+const store = createStore(
+  combineReducers({
+    token,
+    username,
+    language,
+    idList,
+    indexMenu,
+    rawLists,
+    trigger,
+  })
+);
 
 function App() {
   return (
@@ -21,7 +35,7 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/" component={Landing} />
-          <Route path="/home" component={Home} />
+          <Route path="/homeA" component={HomeA} />
           <Route path="/homeB" component={HomeB} />
         </Switch>
       </Router>
