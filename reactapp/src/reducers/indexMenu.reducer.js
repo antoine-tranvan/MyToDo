@@ -1,4 +1,4 @@
-export default function (indexMenu = null, action) {
+export default function (indexMenu = 0, action) {
   if (action.type == "setIndexMenu") {
     var newIndexMenu = action.indexMenu;
     return newIndexMenu;

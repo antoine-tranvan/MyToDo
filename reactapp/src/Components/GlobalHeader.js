@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 const GlobalHeader = ({ welcomeTitle, handleChange }) => {
   const { Option } = Select;
 
-  const { Header, Content, Footer, Sider } = Layout;
+  const { Header } = Layout;
 
   return (
     <Header
@@ -69,4 +69,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(GlobalHeader);
+export const ConnectedGlobalHeader = connect(
+  null,
+  mapDispatchToProps
+)(GlobalHeader);

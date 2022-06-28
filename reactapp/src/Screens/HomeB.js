@@ -1,14 +1,13 @@
 import { translation } from "../I18n/I18n";
-import { LogoutOutlined } from "@ant-design/icons";
 import { Layout, message, Select } from "antd";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import moment from "moment";
 import "moment/locale/fr";
-import ListButton from "../Components/ListButton";
-import ListModal from "../Components/ListModal";
-import GlobalHeader from "../Components/GlobalHeader";
+import { ListButton } from "../Components/ListButton";
+import { ListModal } from "../Components/ListModal";
+import { ConnectedGlobalHeader } from "../Components/GlobalHeader";
 
 moment.locale("fr");
 
@@ -27,17 +26,12 @@ function getItem(label, key, icon, children) {
 
 const HomeB = (props) => {
   const [isModalVisibleCreate, setIsModalVisibleCreate] = useState(false);
-  const [lists, setLists] = useState([]);
   const [rawLists, setRawLists] = useState([]);
   const [trigger, setTrigger] = useState(true);
-  const [visibleCreate, setVisibleCreate] = useState(false);
   const [idList, setIdList] = useState("noId");
-  const [loading0, setLoading0] = useState(false);
-  const [username, setUsername] = useState();
 
   useEffect(() => {
     async function loadDataLists() {
-      setLoading0(true);
       var rawResponse = await fetch("lists/get-lists", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -48,14 +42,11 @@ const HomeB = (props) => {
 
       let items = data.userLists.map((el, index) => getItem(el.title, index));
 
-      setLists(items);
       setRawLists(data.userLists);
-      setUsername(data.user);
 
       if (idList == "noId") {
         setIdList(data.userLists[0]._id);
       }
-      setLoading0(false);
     }
     loadDataLists();
   }, [trigger]);
@@ -67,7 +58,7 @@ const HomeB = (props) => {
       body: `ListName=${values.ListName}&description=${values.Description}&token=${props.token}`,
     });
 
-    let response = await rawResponse.json();
+    await rawResponse.json();
     setIsModalVisibleCreate(false);
     setTrigger(!trigger);
     message.info(`${translation(props.language, "MessageListCreated")}`, 3);
@@ -89,10 +80,6 @@ const HomeB = (props) => {
     console.log("Failed:", errorInfo);
   };
 
-  const onCloseCreate = () => {
-    setVisibleCreate(false);
-  };
-
   const handleChange = (value) => {
     if (value == "Français") {
       props.changeLanguageFR();
@@ -110,7 +97,7 @@ const HomeB = (props) => {
         minHeight: "100vh",
       }}
     >
-      <GlobalHeader
+      <ConnectedGlobalHeader
         welcomeTitle={`${translation(props.language, "titre")} ${
           props.username
         } 👋 !`}

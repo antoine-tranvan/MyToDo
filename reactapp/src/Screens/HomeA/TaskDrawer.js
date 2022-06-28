@@ -93,4 +93,4 @@ const TaskDrawer = ({ title, onClose, visible, onFinish, onFinishFailed }) => (
   </Drawer>
 );
 
-export default TaskDrawer;
+export { TaskDrawer };

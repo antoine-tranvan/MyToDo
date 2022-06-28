@@ -89,4 +89,4 @@ const TasksList = ({
   />
 );
 
-export default TasksList;
+export { TasksList };

@@ -1,7 +1,7 @@
 import { Button, Modal, Form, Input } from "antd";
 import React from "react";
 
-const CreateModal = ({
+const ListModal = ({
   title,
   visible,
   onOk,
@@ -71,4 +71,4 @@ const CreateModal = ({
   </Modal>
 );
 
-export default CreateModal;
+export { ListModal };

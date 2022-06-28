@@ -2,7 +2,7 @@ import React from "react";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 
-const CreateButton = ({ label, handleClick, margin }) => (
+const ListButton = ({ label, handleClick, margin }) => (
   <Button
     style={{
       margin: margin,
@@ -15,4 +15,4 @@ const CreateButton = ({ label, handleClick, margin }) => (
   </Button>
 );
 
-export default CreateButton;
+export { ListButton };

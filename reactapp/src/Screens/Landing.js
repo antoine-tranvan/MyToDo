@@ -44,8 +44,6 @@ function ScreenHome(props) {
     });
     var response = await rawResponse.json();
 
-    console.log("response coucou", response);
-
     setIsLogin(response.results);
     setSignIn(response.results);
 

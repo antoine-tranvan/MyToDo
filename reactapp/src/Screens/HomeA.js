@@ -4,9 +4,9 @@ import React from "react";
 import { connect } from "react-redux";
 import moment from "moment";
 import "moment/locale/fr";
-import GlobalHeader from "../Components/GlobalHeader";
-import GlobalSider from "../Components/GlobalSider";
-import GlobalContent from "../Components/GlobalContent";
+import { ConnectedGlobalHeader } from "../Components/GlobalHeader";
+import { ConnectedGlobalSider } from "./HomeA/Sider";
+import { ConnectedGlobalContent } from "./HomeA/Content";
 
 moment.locale("fr");
 
@@ -26,15 +26,15 @@ const Home = (props) => {
         minHeight: "100vh",
       }}
     >
-      <GlobalHeader
+      <ConnectedGlobalHeader
         welcomeTitle={`${translation(props.language, "titre")} ${
           props.username
         } 👋 !`}
         handleChange={handleChange}
       />
       <Layout className="site-layout">
-        <GlobalSider />
-        <GlobalContent />
+        <ConnectedGlobalSider />
+        <ConnectedGlobalContent />
       </Layout>
     </Layout>
   );
@@ -47,4 +47,19 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(Home);
+function mapDispatchToProps(dispatch) {
+  return {
+    changeLanguageFR: function () {
+      dispatch({
+        type: "FR",
+      });
+    },
+    changeLanguageEN: function () {
+      dispatch({
+        type: "EN",
+      });
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -1,10 +1,10 @@
-import { translation } from "../I18n/I18n";
+import { translation } from "../../I18n/I18n";
 import { Layout, Menu, message } from "antd";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import "moment/locale/fr";
-import ListButton from "../Components/ListButton";
-import ListModal from "../Components/ListModal";
+import { ListButton } from "../../Components/ListButton";
+import { ListModal } from "../../Components/ListModal";
 
 const { Sider } = Layout;
 
@@ -45,7 +45,7 @@ const GlobalSider = (props) => {
       }
     }
     loadDataLists();
-  }, [trigger, props.idList, props.trigger]);
+  }, [trigger, props.trigger]);
 
   const onFinishCreate = async function (values) {
     console.log("Success:", values.ListName, props.token);
@@ -150,4 +150,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GlobalSider);
+export const ConnectedGlobalSider = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GlobalSider);

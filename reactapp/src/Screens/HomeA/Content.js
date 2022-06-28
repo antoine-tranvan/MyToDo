@@ -1,13 +1,13 @@
-import { translation } from "../I18n/I18n";
-import { CloseSquareOutlined, LogoutOutlined } from "@ant-design/icons";
+import { translation } from "../../I18n/I18n";
+import { CloseSquareOutlined } from "@ant-design/icons";
 import { Button, message, Layout } from "antd";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 
-import TaskDrawer from "../Screens/HomeA/TaskDrawer";
-import TasksList from "../Screens/HomeA/TasksList";
-import ListButton from "./ListButton";
-import ListModal from "./ListModal";
+import { TaskDrawer } from "./TaskDrawer";
+import { TasksList } from "./TasksList";
+import { ListButton } from "../../Components/ListButton";
+import { ListModal } from "../../Components/ListModal";
 
 const { Content } = Layout;
 
@@ -28,9 +28,12 @@ const GlobalContent = (props) => {
       });
 
       var data = await rawResponse.json();
+      console.log("data", data);
       if (data.taskslist[0].tasks) {
         setTasksList(data.taskslist[0].tasks);
       }
+      console.log("rawLists", props.rawLists);
+      console.log("indexMenu", props.indexMenu);
     }
     loadDataTasks();
   }, [props.idList, trigger]);
@@ -60,11 +63,12 @@ const GlobalContent = (props) => {
       });
 
       let response = await rawResponse.json();
-      setTrigger(!trigger);
 
       if (response.countcheck == 1) {
         message.info(`${translation(props.language, "MessageListDeleted")}`, 3);
-        props.setIdList("");
+        props.setTrigger();
+        setTrigger(!trigger);
+        props.setIdList("noId");
       } else {
         message.error(
           "Merci de sélectionner une liste à supprimer dans le menu",
@@ -179,11 +183,11 @@ const GlobalContent = (props) => {
               fontSize: 24,
             }}
           >
-            {/* {props.rawLists.length > 0 ? (
-                  props.rawLists[props.indexMenu].title
-                ) : (
-                  <div></div>
-                )} */}
+            {props.rawLists.length > props.indexMenu ? (
+              props.rawLists[props.indexMenu].title
+            ) : (
+              <div></div>
+            )}
           </div>
           <Button
             style={{
@@ -248,6 +252,8 @@ function mapStateToProps(state) {
     language: state.language,
     idList: state.idList,
     trigger: state.trigger,
+    rawLists: state.rawLists,
+    indexMenu: state.indexMenu,
   };
 }
 
@@ -267,4 +273,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GlobalContent);
+export const ConnectedGlobalContent = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GlobalContent);
