@@ -2,12 +2,13 @@ import { translation } from "../../I18n/I18n";
 import { CloseSquareOutlined } from "@ant-design/icons";
 import { Button, message, Layout } from "antd";
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 
 import { TaskDrawer } from "./TaskDrawer";
 import { TasksList } from "./TasksList";
 import { ListButton } from "../../Components/ListButton";
 import { ListModal } from "../../Components/ListModal";
+import { getTasks } from "../../Redux/Tasks/getTasks.reducer";
 
 const { Content } = Layout;
 
@@ -17,26 +18,11 @@ const GlobalContent = (props) => {
   const [visibleCreate, setVisibleCreate] = useState(false);
   const [visibleUpdate, setVisibleUpdate] = useState(false);
   const [idTask, setidTask] = useState();
-  const [tasksList, setTasksList] = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    async function loadDataTasks() {
-      var rawResponse = await fetch("tasks/get-tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `token=${props.token}&listId=${props.idList}`,
-      });
-
-      var data = await rawResponse.json();
-      console.log("data", data);
-      if (data.taskslist[0].tasks) {
-        setTasksList(data.taskslist[0].tasks);
-      }
-      console.log("rawLists", props.rawLists);
-      console.log("indexMenu", props.indexMenu);
-    }
-    loadDataTasks();
-  }, [props.idList, trigger]);
+    dispatch(getTasks());
+  }, [dispatch, props.trigger, trigger]);
 
   const onFinishUpdate = async function (values) {
     let rawResponse = await fetch("lists/update-list", {
@@ -225,15 +211,19 @@ const GlobalContent = (props) => {
           onFinish={onFinishDrawer}
           onFinishFailed={onFinishFailed}
         />
-        <TasksList
-          dataSource={tasksList}
-          Update={translation(props.language, "TaskUpdate")}
-          Deletion={translation(props.language, "TaskDeletion")}
-          Done={translation(props.language, "TaskMarkAsDone")}
-          updateClick={updateClick}
-          deleteTask={deleteTask}
-          markAsDone={markAsDone}
-        />
+        {props.setTasks.tasks ? (
+          <TasksList
+            dataSource={props.setTasks.tasks.taskslist[0].tasks}
+            Update={translation(props.language, "TaskUpdate")}
+            Deletion={translation(props.language, "TaskDeletion")}
+            Done={translation(props.language, "TaskMarkAsDone")}
+            updateClick={updateClick}
+            deleteTask={deleteTask}
+            markAsDone={markAsDone}
+          />
+        ) : (
+          <div></div>
+        )}
       </div>
       <TaskDrawer
         title="Update an existing task"
@@ -254,6 +244,7 @@ function mapStateToProps(state) {
     trigger: state.trigger,
     rawLists: state.rawLists,
     indexMenu: state.indexMenu,
+    setTasks: state.setTasks,
   };
 }
 

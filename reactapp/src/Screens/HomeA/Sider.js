@@ -83,6 +83,7 @@ const GlobalSider = (props) => {
     props.setIndexMenu(key);
     console.log(key);
     setTrigger(!trigger);
+    props.setTrigger();
   };
 
   return (
@@ -145,6 +146,11 @@ function mapDispatchToProps(dispatch) {
       dispatch({
         type: "setRawLists",
         rawLists: rawLists,
+      });
+    },
+    setTrigger: function () {
+      dispatch({
+        type: "setTrigger",
       });
     },
   };

@@ -3,7 +3,7 @@ import "./App.css";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Provider } from "react-redux";
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 
 import Landing from "./Screens/Landing";
 import HomeA from "./Screens/HomeA.js";
@@ -16,7 +16,11 @@ import idList from "./reducers/idList.reducer";
 import indexMenu from "./reducers/indexMenu.reducer";
 import rawLists from "./reducers/rawLists.reducer";
 import trigger from "./reducers/trigger.reducer";
+import setTasks from "./Redux/Tasks/getTasks.reducer";
+import { watcherSaga } from "./Redux/rootSaga";
+import createSagaMiddleware from "redux-saga";
 
+const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
   combineReducers({
     token,
@@ -26,8 +30,13 @@ const store = createStore(
     indexMenu,
     rawLists,
     trigger,
-  })
+    setTasks,
+  }),
+  {},
+  applyMiddleware(sagaMiddleware)
 );
+
+sagaMiddleware.run(watcherSaga);
 
 function App() {
   return (

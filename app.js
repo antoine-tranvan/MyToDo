@@ -1,5 +1,6 @@
 var createError = require("http-errors");
 var express = require("express");
+var cors = require("cors");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -14,6 +15,12 @@ var jobRouter = require("./routes/job");
 
 var app = express();
 
+var corsOptions = {
+  origin: "http://localhost:3001",
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
